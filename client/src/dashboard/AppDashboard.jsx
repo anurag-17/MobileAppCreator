@@ -37,7 +37,7 @@ const AppDashboard = () => {
                     </ListItem>
                 </List>
             </Drawer>
-            <Box sx={{ display: "flex", ml: '112px' }}>
+            <Box sx={{ display: "flex", ml: '150px' }}>
                 <Box sx={{ flexGrow: 1, px: 3,py:2 }}>
                     <Container>
                         {selectedTab === "dashboard" && <Dashboard setTheme={setTheme} setSelectedTab={setSelectedTab} />}
