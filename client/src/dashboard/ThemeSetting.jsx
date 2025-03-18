@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Typography, TextField, Button, Box, MenuItem, Select, Divider, Card, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
-import { SketchPicker } from 'react-color';
 import MobilePreview from './MobilePreview';
+import { HexColorPicker } from "react-colorful";
 
 const ThemeSettings = ({ theme, setTheme }) => {
     const [colorPicker, setColorPicker] = useState({ field: null, color: "" });
@@ -24,16 +24,15 @@ const ThemeSettings = ({ theme, setTheme }) => {
         setTheme({ ...theme, [e.target.name]: e.target.value });
     };
 
-    const handleColorChange = (color) => {
-        setColorPicker((prev) => ({ ...prev, color: color.hex }));
-    };
 
     const saveColor = () => {
-        if (colorPicker.field) {
-            setTheme({ ...theme, [colorPicker.field]: colorPicker.color });
-            setColorPicker({ field: null, color: "" }); // Close picker after saving
-        }
+        setTheme((prevTheme) => ({
+            ...prevTheme,
+            [colorPicker.field]: colorPicker.color,
+        }));
+        setColorPicker({ field: "", color: "" }); // Close picker after saving
     };
+
 
     const handleFileChange = (e) => {
         if (e.target.name === "banner") {
@@ -116,10 +115,12 @@ const ThemeSettings = ({ theme, setTheme }) => {
 
                             {colorPicker.field === name && (
                                 <Box sx={{ mt: 1, p: 2, border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#fff", width: '230px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                    <SketchPicker
+                              
+                                    <HexColorPicker
                                         color={colorPicker.color}
-                                        onChange={handleColorChange}
+                                        onChange={(newColor) => setColorPicker({ ...colorPicker, color: newColor })}
                                     />
+
                                     <Button variant="text" color="secondary" onClick={saveColor} sx={{ mt: 1 }}>
                                         Save Color
                                     </Button>
@@ -130,7 +131,7 @@ const ThemeSettings = ({ theme, setTheme }) => {
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
-               
+
 
                 <Box sx={{ maxWidth: '400px' }}>
 
@@ -146,11 +147,11 @@ const ThemeSettings = ({ theme, setTheme }) => {
                             name="fontSize"
                             sx={{ width: '400px' }}
                         >
-                    {[12, 13, 14, 15, 16, 17, 18].map((size) => (
-                            <MenuItem key={size} value={size}>
-                                {size}
-                            </MenuItem>
-                        ))}
+                            {[12, 13, 14, 15, 16, 17, 18].map((size) => (
+                                <MenuItem key={size} value={size}>
+                                    {size}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </Box>
