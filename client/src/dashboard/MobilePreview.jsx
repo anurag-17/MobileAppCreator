@@ -83,7 +83,7 @@ const MobilePreview = ({ theme, banner, logo }) => {
                 showLabels
                 value={navValue}
                 onChange={(event, newValue) => setNavValue(newValue)}
-                sx={{ backgroundColor: "#fff", borderTop: "1px solid #ddd", px: 1, backgroundColor: theme.headerBg,  py: 1 }}
+                sx={{  borderTop: "1px solid #ddd", px: 1, backgroundColor: theme.headerBg,  py: 1 }}
             >
                 <BottomNavigationAction icon={<HomeIcon sx={{ color: theme.iconColor }} />} />
                 <BottomNavigationAction icon={<SearchIcon sx={{ color: theme.iconColor }} />} />
