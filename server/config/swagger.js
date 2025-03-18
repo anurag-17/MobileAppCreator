@@ -16,6 +16,9 @@ const swaggerOptions = {
       {
         url: "http://localhost:8800", // Your local server URL
       },
+      {
+        url: "http://147.93.108.140:8800", // Your local server URL
+      },
     ],
   },
   apis: ["./Route/*.js"], // Path to your API files
