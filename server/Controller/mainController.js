@@ -34,7 +34,6 @@ const WebsiteConfig = require('../model/mainModel');
 // };
 
 
-
 exports.addData = async (req, res) => {
     try {
         const { website_name, website_url, text_size, font_type, color, header_color, icon_color } = req.body;
