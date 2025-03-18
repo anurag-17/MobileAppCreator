@@ -1,4 +1,5 @@
 const WebsiteConfig = require('../model/mainModel');
+const Product = require("../model/ProductsModels");
 
 
 // exports.AddData = async (req, res, next) => {
@@ -88,8 +89,6 @@ exports.addData = async (req, res) => {
     }
 };
 
-
-
 // exports.getWebsiteConfig = async (req, res) => {
 //     try {
 //         const websiteConfig = await WebsiteConfig.findOne();
@@ -124,6 +123,37 @@ exports.getWebsiteConfig = async (req, res) => {
         };
 
         return res.status(200).json({ status: true, data: updatedConfig });
+    } catch (error) {
+        return res.status(500).json({ status: false, message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+exports.getProduct = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page, 10) || 1; // Default to page 1
+        const limit = parseInt(req.query.limit, 10) || 10; // Default to 12 products per page
+        const skip = (page - 1) * limit;
+
+        // Get total count of products
+        const totalProducts = await Product.countDocuments();
+
+        // Fetch paginated products
+        const products = await Product.find().skip(skip).limit(limit);
+
+        if (!products || products.length === 0) {
+            return res.status(404).json({ status: false, message: "No products found" });
+        }
+
+        return res.status(200).json({
+            status: true,
+            pageInfo: {
+                currentPage: page,
+                totalPages: Math.ceil(totalProducts / limit),
+                totalProducts,
+            },
+            data: products,
+        });
     } catch (error) {
         return res.status(500).json({ status: false, message: "Internal Server Error", error: error.message });
     }
