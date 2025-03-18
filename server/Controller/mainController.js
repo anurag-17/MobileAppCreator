@@ -90,6 +90,20 @@ exports.addData = async (req, res) => {
 
 
 
+// exports.getWebsiteConfig = async (req, res) => {
+//     try {
+//         const websiteConfig = await WebsiteConfig.findOne();
+
+//         if (!websiteConfig) {
+//             return res.status(404).json({ status: false, message: "No website configuration found" });
+//         }
+
+//         return res.status(200).json({ status: true, data: websiteConfig });
+//     } catch (error) {
+//         return res.status(500).json({ status: false, message: "Internal Server Error", error: error.message });
+//     }
+// };
+
 exports.getWebsiteConfig = async (req, res) => {
     try {
         const websiteConfig = await WebsiteConfig.findOne();
@@ -98,7 +112,18 @@ exports.getWebsiteConfig = async (req, res) => {
             return res.status(404).json({ status: false, message: "No website configuration found" });
         }
 
-        return res.status(200).json({ status: true, data: websiteConfig });
+        // Define your base URL (change accordingly)
+        const baseUrl = "http://147.93.108.140:8800/"; // Replace with your actual domain or API URL
+
+        // Modify the response to include full image URLs
+        const updatedConfig = {
+            ...websiteConfig._doc, // Spread existing properties
+            template_design_image: `${baseUrl}${websiteConfig.template_design_image}`,
+            banner_img: `${baseUrl}${websiteConfig.banner_img}`,
+            logo: `${baseUrl}${websiteConfig.logo}`
+        };
+
+        return res.status(200).json({ status: true, data: updatedConfig });
     } catch (error) {
         return res.status(500).json({ status: false, message: "Internal Server Error", error: error.message });
     }
