@@ -1,89 +1,187 @@
-import React, { useState } from "react";
-import { Drawer, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Container, TextField, Button, Box, MenuItem, Select, Paper, IconButton } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-
-const MobilePreview = ({ theme }) => {
-    return (
-        <Paper elevation={3} sx={{ width: 280, height: 'auto', borderRadius: 5, overflow: 'hidden', }}>
-            {/* Header */}
-            <Box sx={{ backgroundColor: theme.headerBg, padding: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <IconButton><MenuIcon sx={{ color: theme.iconColor }} /></IconButton>
-
-                {theme.logo && <img src={theme.logo} alt="Logo" style={{ height: 30 }} />}
-
-                <Typography variant="body1" sx={{ color: theme.textColor, fontWeight: "bold", fontFamily: theme.fontFamily, fontSize: theme.fontSize }}>
-                    {theme.name ?? 'Website Name'}
-                </Typography>
-                
-                <IconButton><SearchIcon sx={{ color: theme.iconColor }} /></IconButton>
-            </Box>
-
-            {/* Banner */}
-            {theme.banner && <img src={theme.banner} alt="Banner" style={{ width: "100%", height: 120, objectFit: "cover" }} />}
-
-            {/* Section Title */}
-            <Typography variant="body2" align="center" sx={{ mt: 1, color: theme.textColor, fontFamily: theme.fontFamily, fontSize: theme.fontSize }}>
-                Section Title
-            </Typography>
-
-            {/* Content Blocks */}
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, p: 1 }}>
-                <Paper sx={{ height: 120, backgroundColor: "black" }}></Paper>
-                <Paper sx={{ height: 120, backgroundColor: "gray" }}></Paper>
-                <Paper sx={{ gridColumn: "span 2", height: 150, backgroundColor: "#ccc" }}></Paper>
-            </Box>
-        </Paper>
-    );
-};
+import React, { useState, useEffect } from "react";
+import { Typography, TextField, Button, Box, MenuItem, Select, Divider, Card, FormControl, InputLabel } from "@mui/material";
+import axios from "axios";
+import { SketchPicker } from 'react-color';
+import MobilePreview from './MobilePreview';
 
 const ThemeSettings = ({ theme, setTheme }) => {
+    const [colorPicker, setColorPicker] = useState({ field: null, color: "" });
+    const [bannerFile, setBannerFile] = useState(null);
+    const [logoFile, setLogoFile] = useState(null);
+    const [bannerUrl, setBannerUrl] = useState(null);
+    const [logoUrl, setLogoUrl] = useState(null);
+
+    useEffect(() => {
+        const storedValues = {
+            appName: localStorage.getItem("appName") || "Website Name",
+            weburl: localStorage.getItem("weburl") || "",
+            selectedTheme: localStorage.getItem("selectedTheme") || "",
+        };
+        setTheme((prevTheme) => ({ ...prevTheme, ...storedValues }));
+    }, [setTheme]);
+
     const handleChange = (e) => {
         setTheme({ ...theme, [e.target.name]: e.target.value });
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setTheme({ ...theme, [e.target.name]: reader.result });
-            };
-            reader.readAsDataURL(file);
+    const handleColorChange = (color) => {
+        setColorPicker((prev) => ({ ...prev, color: color.hex }));
+    };
+
+    const saveColor = () => {
+        if (colorPicker.field) {
+            setTheme({ ...theme, [colorPicker.field]: colorPicker.color });
+            setColorPicker({ field: null, color: "" }); // Close picker after saving
         }
     };
 
-    
+    const handleFileChange = (e) => {
+        if (e.target.name === "banner") {
+            setBannerFile(e.target.files[0]);
+            setBannerUrl(URL.createObjectURL(e.target.files[0]));
+        } else if (e.target.name === "logo") {
+            setLogoFile(e.target.files[0]);
+            setLogoUrl(URL.createObjectURL(e.target.files[0]));
+        }
+    };
+
+    const handleSave = async () => {
+        const formData = new FormData();
+        formData.append("color", theme.textColor);
+        formData.append("font_type", theme.fontFamily);
+        if (logoFile) formData.append("logo", logoFile);
+        formData.append("website_url", theme.weburl);
+        formData.append("website_name", theme.appName);
+        if (bannerFile) formData.append("banner_img", bannerFile);
+        formData.append("header_color", theme.headerBg);
+        formData.append("text_size", `${theme.fontSize}px`);
+        formData.append("icon_color", theme.iconColor);
+        formData.append("template_design_image", theme.selectedTheme || "");
+
+        try {
+            await axios.post("http://147.93.108.140:8800/api/addData", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            alert("Theme saved successfully!");
+            localStorage.clear();
+            setTheme({
+                appName: "",
+                weburl: "",
+                selectedTheme: "",
+                headerBg: "",
+                iconColor: "",
+                textColor: "",
+                fontSize: "",
+                fontFamily: "",
+                banner: null,
+                logo: null
+            });
+            setBannerFile(null);
+            setLogoFile(null);
+            setBannerUrl(null)
+            setLogoUrl(null)
+            localStorage.removeItem("appName");
+            localStorage.removeItem("weburl");
+            localStorage.removeItem("selectedTheme");
+        } catch (error) {
+            console.error("Error saving theme:", error);
+            alert("Failed to save theme.");
+        }
+    };
+    const colorFields = [
+        { name: "headerBg", label: "Header Background Color" },
+        { name: "iconColor", label: "Icon Color" },
+        { name: "textColor", label: "Font Color" }
+    ];
+
     return (
-        <Box display="flex" gap={10}>
-            <Box flex={1}>
+        <Box display="flex" gap={5} sx={{ height: "100vh", overflow: "hidden", px: 3 }}>
+            <Box sx={{ flex: 1, p: 3, overflowY: "auto", maxHeight: "100vh" }}>
                 <Typography variant="h5" sx={{ mb: 2 }}>Theme Settings</Typography>
 
-                <TextField label="Header Background Color" name="headerBg" value={theme.headerBg} onChange={handleChange} fullWidth margin="normal" />
-               
-                <TextField label="Icon Color" name="iconColor" value={theme.iconColor} onChange={handleChange} fullWidth margin="normal" />
-              
-                <TextField label="Font Color" name="textColor" value={theme.textColor} onChange={handleChange} fullWidth margin="normal" />
-                
-                <TextField label="Font Size (px)" name="fontSize" type="number" value={theme.fontSize} onChange={handleChange} fullWidth margin="normal" />
+                <Box>
+                    {colorFields.map(({ name, label }) => (
+                        <Box key={name} sx={{ mb: 2 }}>
+                            <TextField
+                                label={label}
+                                name={name}
+                                value={theme[name]}
+                                onClick={() => setColorPicker({ field: name, color: theme[name] })}
+                                margin="normal"
+                                sx={{ width: '400px', cursor: "pointer" }}
+                                readOnly
+                            />
 
-                <Select name="fontFamily" label="Font Family" value={theme.fontFamily} onChange={handleChange} fullWidth >
-                    <MenuItem value="" disabled>Font Family</MenuItem>
-                    <MenuItem value="Axiforma-Regular">Axiforma-Regular</MenuItem>
-                    <MenuItem value="Arial">Arial</MenuItem>
-                    <MenuItem value="Roboto">Roboto</MenuItem>
-                </Select>
+                            {colorPicker.field === name && (
+                                <Box sx={{ mt: 1, p: 2, border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#fff", width: '230px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <SketchPicker
+                                        color={colorPicker.color}
+                                        onChange={handleColorChange}
+                                    />
+                                    <Button variant="text" color="secondary" onClick={saveColor} sx={{ mt: 1 }}>
+                                        Save Color
+                                    </Button>
+                                </Box>
+                            )}
+                        </Box>
+                    ))}
+                </Box>
 
-                <Typography variant="body1" sx={{ mt: 2 }}>Upload Banner Image</Typography>
+                <Divider sx={{ my: 2 }} />
+                <FormControl fullWidth>
+                    <InputLabel id="fontSize">Font Size (px)</InputLabel>
+                    <Select
+                        labelId="fontSize"
+                        id="fontSize"
+                        value={theme.fontSize}
+                        onChange={handleChange}
+                        fullWidth
+                        name="fontSize"
+                        sx={{ width: '400px' }}
+                    >
+                        {[12, 13, 14, 15, 16, 17, 18].map((size) => (
+                            <MenuItem key={size} value={size}>
+                                {size}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <Box sx={{ my: 4 }} />
+
+                <FormControl fullWidth>
+                    <InputLabel id="fontFamily">Font Size (px)</InputLabel>
+                    <Select
+                        labelId="fontFamily"
+                        id="fontFamily"
+                        value={theme.fontFamily}
+                        onChange={handleChange}
+                        fullWidth
+                        name="fontFamily"
+                        sx={{ width: '400px' }}
+                    >
+                        <MenuItem value="" disabled>Font Family</MenuItem>
+                        <MenuItem value="Axiforma-Regular">Axiforma-Regular</MenuItem>
+                        <MenuItem value="Arial">Arial</MenuItem>
+                        <MenuItem value="Roboto">Roboto</MenuItem>
+                    </Select>
+                </FormControl>
+
+
+                <Typography variant="body1" sx={{ mt: 2 }} >
+                    Upload Banner Image
+                </Typography>
                 <input type="file" accept="image/*" name="banner" onChange={handleFileChange} />
 
                 <Typography variant="body1" sx={{ mt: 2 }}>Upload Logo</Typography>
                 <input type="file" accept="image/*" name="logo" onChange={handleFileChange} />
-                
-                <Button variant="contained" color="primary" sx={{ mt: 2 }}>Save</Button>
-            </Box>
 
-            <MobilePreview theme={theme} />
+                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSave}>
+                    Save
+                </Button>
+            </Box>
+            <MobilePreview theme={theme} banner={bannerUrl} logo={logoUrl} />
+
         </Box>
     );
 };
