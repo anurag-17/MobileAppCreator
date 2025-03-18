@@ -103,6 +103,7 @@ const ThemeSettings = ({ theme, setTheme }) => {
                     {colorFields.map(({ name, label }) => (
                         <Box key={name} sx={{ mb: 2 }}>
                             <TextField
+                                id="outlined-basic"
                                 label={label}
                                 name={name}
                                 value={theme[name]}
@@ -110,6 +111,7 @@ const ThemeSettings = ({ theme, setTheme }) => {
                                 margin="normal"
                                 sx={{ width: '400px', cursor: "pointer" }}
                                 readOnly
+                                variant="outlined"
                             />
 
                             {colorPicker.field === name && (
@@ -128,45 +130,54 @@ const ThemeSettings = ({ theme, setTheme }) => {
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
-                <FormControl fullWidth>
-                    <InputLabel id="fontSize">Font Size (px)</InputLabel>
-                    <Select
-                        labelId="fontSize"
-                        id="fontSize"
-                        value={theme.fontSize}
-                        onChange={handleChange}
-                        fullWidth
-                        name="fontSize"
-                        sx={{ width: '400px' }}
-                    >
-                        {[12, 13, 14, 15, 16, 17, 18].map((size) => (
+               
+
+                <Box sx={{ maxWidth: '400px' }}>
+
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select">Font-size</InputLabel>
+                        <Select
+                            labelId="demo-simple-select"
+                            id="demo-simple-select"
+                            label="Age"
+                            value={theme.fontSize}
+                            onChange={handleChange}
+                            fullWidth
+                            name="fontSize"
+                            sx={{ width: '400px' }}
+                        >
+                    {[12, 13, 14, 15, 16, 17, 18].map((size) => (
                             <MenuItem key={size} value={size}>
                                 {size}
                             </MenuItem>
                         ))}
-                    </Select>
-                </FormControl>
+                        </Select>
+                    </FormControl>
+                </Box>
 
                 <Box sx={{ my: 4 }} />
 
-                <FormControl fullWidth>
-                    <InputLabel id="fontFamily">Font Size (px)</InputLabel>
-                    <Select
-                        labelId="fontFamily"
-                        id="fontFamily"
-                        value={theme.fontFamily}
-                        onChange={handleChange}
-                        fullWidth
-                        name="fontFamily"
-                        sx={{ width: '400px' }}
-                    >
-                        <MenuItem value="" disabled>Font Family</MenuItem>
-                        <MenuItem value="Axiforma-Regular">Axiforma-Regular</MenuItem>
-                        <MenuItem value="Arial">Arial</MenuItem>
-                        <MenuItem value="Roboto">Roboto</MenuItem>
-                    </Select>
-                </FormControl>
+                <Box sx={{ maxWidth: '400px' }}>
 
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Font-family</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            label="Age"
+                            name="fontFamily"
+                            fullWidth
+                            value={theme.fontFamily}
+                            onChange={handleChange}
+                            sx={{ width: '400px' }}
+                        >
+                            <MenuItem value="" disabled>Font Family</MenuItem>
+                            <MenuItem value="Axiforma-Regular">Axiforma-Regular</MenuItem>
+                            <MenuItem value="Arial">Arial</MenuItem>
+                            <MenuItem value="Roboto">Roboto</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
 
                 <Typography variant="body1" sx={{ mt: 2 }} >
                     Upload Banner Image
