@@ -34,6 +34,12 @@ app.get("/", (req, res) => {
   res.send("api is running..");
 });
 
-server.listen(PORT, () => {
-  console.log(`Server Running on Port ${PORT}`);
+// const PORT = 8800;
+const HOST = "0.0.0.0"; // Allows external access
+
+server.listen(PORT, HOST, () => {
+    console.log(`Server running at http://${HOST}:${PORT}`);
 });
+// server.listen(PORT, () => {
+//   console.log(`Server Running on Port ${PORT}`);
+// });
