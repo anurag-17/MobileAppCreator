@@ -53,6 +53,7 @@ const ThemeSettings = ({ theme, setTheme }) => {
         }
     };
 
+    
     return (
         <Box display="flex" gap={10}>
             <Box flex={1}>
