@@ -1,12 +1,14 @@
 
 const express = require('express')
 const router = express.Router()
-const { addData,getWebsiteConfig } = require("../Controller/mainController");
+const { addData,getWebsiteConfig,getProduct } = require("../Controller/mainController");
 const upload = require("../config/uploadMiddleware"); // Import the upload middleware
 
 // router.route("/AddData").post(upload.fields([{ name: "banner_img" }, { name: "logo" }]),AddData);
 router.post("/addData", upload.fields([{ name: "banner_img" }, { name: "logo" },{ name: "template_design_image" }]), addData);
 router.route("/getWebsiteConfig").get(getWebsiteConfig);
+router.route("/getProduct").get(getProduct);
+
 
 /**
  * @openapi
@@ -79,5 +81,20 @@ router.route("/getWebsiteConfig").get(getWebsiteConfig);
  *         description: Internal server error.
  */
 
+/**
+ * @openapi
+ * '/api/getProduct':
+ *   get:
+ *     tags:
+ *       - Website Configuration
+ *     summary: Get product data
+ *     responses:
+ *       200:
+ *         description: data retrieved successfully.
+ *       404:
+ *         description: No data found.
+ *       500:
+ *         description: Internal server error.
+ */
 
 module.exports = router
