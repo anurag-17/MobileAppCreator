@@ -29,6 +29,11 @@ app.use('/api', require('./Route/mainRoute'));
 // Serve Swagger documentation
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
+
+app.get("/", (req, res) => {
+  res.send("api is running..");
+});
+
 server.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
 });
