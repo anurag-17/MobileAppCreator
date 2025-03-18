@@ -149,6 +149,7 @@ exports.getProduct = async (req, res) => {
             status: true,
             pageInfo: {
                 currentPage: page,
+                limit:limit,
                 totalPages: Math.ceil(totalProducts / limit),
                 totalProducts,
             },
