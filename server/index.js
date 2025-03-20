@@ -26,6 +26,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const allowedOrigins = [
   "http://147.93.108.140:5173",
   "http://147.93.108.140",
+  "http://localhost:5173",
+  "http://localhost:8800",
+  "http://147.93.108.140:8800",
 ];
 
 app.use(cors({
