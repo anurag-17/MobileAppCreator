@@ -23,8 +23,19 @@ app.use(express.urlencoded({ limit: "100mb", extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cors());
 // Updated CORS settings to allow frontend
+const allowedOrigins = [
+  "http://147.93.108.140:5173",
+  "http://147.93.108.140",
+];
+
 app.use(cors({
-  origin: "http://147.93.108.140:5173",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true
 }));
