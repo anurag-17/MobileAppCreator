@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     build: {
       rollupOptions: {
-        external: [],
+        external: ['react-device-frameset'],
       },
     },
   }
