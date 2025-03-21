@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Paper } from "@mui/material";
 import { DeviceFrameset } from "react-device-frameset";
-import "react-device-frameset/styles/marvel-devices.min.css";
 import ProfileScreen from "../app-component/ProfileScreen";
 import ProductDetails from "../app-component/ProductDetails";
 import HomeSection from "../app-component/HomeSection";
@@ -9,6 +8,8 @@ import Header from "../app-component/Header";
 import Footer from "../app-component/Footer";
 import { Wishlist } from "../app-component/Wishlist";
 import HomePage from "../app-component/HomePage";
+import "react-device-frameset/styles/marvel-devices.min.css";
+
 
 const MobilePreview = ({ theme, data }) => {
     const [navValue, setNavValue] = useState(0);
