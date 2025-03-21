@@ -4,7 +4,7 @@ import axios from "axios";
 import MobilePreview from './MobilePreview';
 import { HexColorPicker } from "react-colorful";
 
-const ThemeSettings = ({ theme, setTheme }) => {
+const ThemeSettings = ({ data, theme, setTheme }) => {
     const [colorPicker, setColorPicker] = useState({ field: null, color: "" });
     const [bannerFile, setBannerFile] = useState(null);
     const [logoFile, setLogoFile] = useState(null);
@@ -24,7 +24,6 @@ const ThemeSettings = ({ theme, setTheme }) => {
         setTheme({ ...theme, [e.target.name]: e.target.value });
     };
 
-
     const saveColor = () => {
         setTheme((prevTheme) => ({
             ...prevTheme,
@@ -32,7 +31,6 @@ const ThemeSettings = ({ theme, setTheme }) => {
         }));
         setColorPicker({ field: "", color: "" }); // Close picker after saving
     };
-
 
     const handleFileChange = (e) => {
         if (e.target.name === "banner") {
@@ -92,7 +90,9 @@ const ThemeSettings = ({ theme, setTheme }) => {
         { name: "iconColor", label: "Icon Color" },
         { name: "textColor", label: "Font Color" }
     ];
-
+    if (!data || data.length === 0) {
+        return <Typography>No products found</Typography>;
+    }
     return (
         <Box display="flex" gap={5} sx={{ height: "100vh", overflow: "hidden", px: 3 }}>
             <Box sx={{ flex: 1, p: 3, overflowY: "auto", maxHeight: "100vh" }}>
@@ -115,7 +115,7 @@ const ThemeSettings = ({ theme, setTheme }) => {
 
                             {colorPicker.field === name && (
                                 <Box sx={{ mt: 1, p: 2, border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#fff", width: '230px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                              
+
                                     <HexColorPicker
                                         color={colorPicker.color}
                                         onChange={(newColor) => setColorPicker({ ...colorPicker, color: newColor })}
@@ -192,7 +192,7 @@ const ThemeSettings = ({ theme, setTheme }) => {
                     Save
                 </Button>
             </Box>
-            <MobilePreview theme={theme} banner={bannerUrl} logo={logoUrl} />
+            <MobilePreview theme={theme} banner={bannerUrl} logo={logoUrl} data={data} />
 
         </Box>
     );
