@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     build: {
       rollupOptions: {
-        external: ['react-device-frameset',"react-device-frameset/styles/marvel-devices.min.css"],
+        external: ['react-device-frameset',"react-device-frameset/styles/marvel-devices.min.css","react-icons"],
       },
     },
   }
